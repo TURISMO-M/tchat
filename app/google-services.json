@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "98619215186",
+    "project_id": "tchat-97bda",
+    "storage_bucket": "tchat-97bda.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98619215186:android:7f903ef45bf9dfb5747e8b",
+        "android_client_info": {
+          "package_name": "com.teermux.tchat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCz8LZu9kZIcHtJVp1v9239uzCcGC3-mKY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

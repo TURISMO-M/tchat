@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base Material 3 Theme -->
+    <style name="Theme.TChat" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Main Accent & Brand Colors -->
+        <item name="colorPrimary">#8A2BE2</item>
+        <item name="colorPrimaryContainer">#8A2BE2</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+
+        <item name="colorSecondary">#8A2BE2</item>
+        <item name="colorSecondaryContainer">#6A1FB0</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+
+        <!-- Accent Color for legacy widgets -->
+        <item name="colorAccent">#8A2BE2</item>
+
+        <!-- System Status & Navigation Bar Configuration -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+</resources>
+

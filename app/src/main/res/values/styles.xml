@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Alias style mapping for legacy references -->
+    <style name="AppTheme" parent="Theme.TChat" />
+
+</resources>
