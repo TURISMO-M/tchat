@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <!-- MAIN CONTENT ROOT -->
+    <RelativeLayout
+        android:id="@+id/mainRootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- APP HEADER BAR -->
+        <LinearLayout
+            android:id="@+id/headerBar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_alignParentTop="true"
+            android:background="?attr/colorPrimaryContainer"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp">
+
+            <!-- Drawer Icon -->
+            <ImageView
+                android:id="@+id/btnOpenDrawer"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_menu_hamburger"
+                app:tint="?attr/colorOnPrimaryContainer" />
+
+            <!-- App Title -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="TChat"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Header Mode Swap Icon -->
+            <ImageView
+                android:id="@+id/btnModeMenu"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="Mode Selector"
+                android:focusable="true"
+                android:padding="4dp"
+                android:src="@drawable/ic_mode_swap"
+                android:visibility="gone"
+                app:tint="?attr/colorOnPrimaryContainer" />
+        </LinearLayout>
+
+        <!-- IN-APP SLIDING NOTIFICATION BANNER OVERLAY -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardInAppNotification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/headerBar"
+            android:layout_margin="12dp"
+            android:elevation="10dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:id="@+id/imgBannerAvatar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@android:drawable/ic_dialog_info"
+                    app:tint="#8A2BE2" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvBannerSender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvBannerMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="#CCCCCC"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- MAIN CONTAINER FOR TABS -->
+        <FrameLayout
+            android:id="@+id/tabContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottomFloatingDock"
+            android:layout_below="@id/headerBar">
+
+            <!-- TAB 1: HOME -->
+            <RelativeLayout
+                android:id="@+id/layoutHomeTab"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:id="@+id/headerSpacesTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:text="Spaces &amp; Direct Messages"
+                        android:textColor="#8A2BE2"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/headerSpacesTitle"
+                    android:clipToPadding="false"
+                    android:paddingBottom="80dp">
+
+                    <LinearLayout
+                        android:id="@+id/rvGlobalChats"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </ScrollView>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabNewChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="20dp"
+                    android:contentDescription="New Chat or Space"
+                    android:src="@android:drawable/ic_input_add"
+                    app:backgroundTint="#8A2BE2"
+                    app:tint="#FFFFFF" />
+
+            </RelativeLayout>
+
+            <!-- TAB 2: CONNECTIONS -->
+            <ScrollView
+                android:id="@+id/layoutConnectionsTab"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- IP / Router Info Card -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvStatus"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Status: Disconnected"
+                                    android:textColor="#CCCCCC"
+                                    android:textSize="14sp" />
+
+                                <ImageView
+                                    android:id="@+id/btnRefreshIp"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@android:drawable/ic_popup_sync"
+                                    app:tint="#8A2BE2" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvMyIp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:text="Your IP: 192.168.0.100"
+                                android:textColor="#4A90E2"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Local Router Devices Card -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                        app:cardCornerRadius="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:id="@+id/headerExpandWifi"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvWifiDiscoveryStatus"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Local Network Devices"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:id="@+id/arrowWifiExpand"
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    android:padding="4dp"
+                                    android:src="@android:drawable/arrow_down_float"
+                                    app:tint="#FFFFFF" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnScanLocalNetwork"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Scan Local Network" />
+
+                            <LinearLayout
+                                android:id="@+id/containerDiscoveredWifi"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:orientation="vertical" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Bluetooth Devices Card -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/panelBluetooth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                        app:cardCornerRadius="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:id="@+id/headerExpandBt"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Bluetooth Devices"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:id="@+id/arrowBtExpand"
+                                    android:layout_width="28dp"
+                                    android:layout_height="28dp"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    android:padding="4dp"
+                                    android:src="@android:drawable/arrow_down_float"
+                                    app:tint="#FFFFFF" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/containerBtContent"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:orientation="vertical">
+
+                                <Button
+                                    android:id="@+id/btnBtServer"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="START BT HOST" />
+
+                                <Button
+                                    android:id="@+id/btnScanBt"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="SCAN BT DEVICES" />
+
+                                <LinearLayout
+                                    android:id="@+id/containerBtDevices"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Manual IP Connection Card -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/panelIpConnection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                        app:cardCornerRadius="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <EditText
+                                android:id="@+id/etTargetIp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Target Host IP Address"
+                                android:inputType="text"
+                                android:textColor="#FFFFFF"
+                                android:textColorHint="#888888" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:orientation="horizontal">
+
+                                <Button
+                                    android:id="@+id/btnHostTcp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Host TCP" />
+
+                                <Button
+                                    android:id="@+id/btnConnectTcp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_weight="1"
+                                    android:text="Connect IP" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- TAB 3: ACTIVE CHAT -->
+            <RelativeLayout
+                android:id="@+id/layoutChatTab"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <!-- Reply Preview Bar -->
+                <LinearLayout
+                    android:id="@+id/layoutReplyPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:background="#2E2E42"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvReplyPreviewText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp" />
+
+                    <ImageView
+                        android:id="@+id/btnCloseReply"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel"
+                        app:tint="#FFFFFF" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvMessages"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@id/layoutInputArea"
+                    android:layout_below="@id/layoutReplyPreview"
+                    android:clipToPadding="false"
+                    android:padding="10dp"
+                    tools:listitem="@layout/item_chat_message" />
+
+                <!-- Input Field & Attachments Bar -->
+                <LinearLayout
+                    android:id="@+id/layoutInputArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="?attr/colorSurfaceVariant"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/btnAttach"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:padding="6dp"
+                        android:src="@android:drawable/ic_menu_add"
+                        app:tint="#8A2BE2" />
+
+                    <EditText
+                        android:id="@+id/etMessage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="Type a message..."
+                        android:padding="10dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#777777" />
+
+                    <ImageView
+                        android:id="@+id/btnSend"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="6dp"
+                        android:src="@android:drawable/ic_menu_send"
+                        app:tint="#4A90E2" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <!-- TAB 4: SETTINGS -->
+            <ScrollView
+                android:id="@+id/layoutSettingsTab"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                        app:cardCornerRadius="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Account &amp; Profile"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/btnGoogleSignIn"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:text="Sign In with Google" />
+
+                            <!-- Username Display (View Mode) -->
+                            <LinearLayout
+                                android:id="@+id/layoutUsernameView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvUsername"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Username"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="16sp" />
+
+                                <Button
+                                    android:id="@+id/btnEditUsername"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:text="Edit" />
+                            </LinearLayout>
+
+                            <!-- Username Edit (Edit Mode) -->
+                            <LinearLayout
+                                android:id="@+id/layoutUsernameEdit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <EditText
+                                    android:id="@+id/etUsername"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="Username"
+                                    android:textColor="#FFFFFF"
+                                    android:textColorHint="#777777" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:orientation="horizontal">
+
+                                    <Button
+                                        android:id="@+id/btnSaveUsername"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Save" />
+
+                                    <Button
+                                        android:id="@+id/btnCancelEdit"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="8dp"
+                                        android:layout_weight="1"
+                                        android:text="Cancel" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnSaveProfile"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Save Profile" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                        app:cardCornerRadius="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="App Theme"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:orientation="horizontal">
+
+                                <Button
+                                    android:id="@+id/btnThemeSystem"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="System" />
+
+                                <Button
+                                    android:id="@+id/btnThemeDark"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_weight="1"
+                                    android:text="Dark" />
+
+                                <Button
+                                    android:id="@+id/btnThemeLight"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_weight="1"
+                                    android:text="Light" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </ScrollView>
+        </FrameLayout>
+
+        <!-- FLOATING PILL BOTTOM NAVIGATION DOCK -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/bottomFloatingDock"
+            android:layout_width="wrap_content"
+            android:layout_height="54dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#222438"
+            app:cardCornerRadius="27dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp">
+
+                <LinearLayout
+                    android:id="@+id/navHomeBtn"
+                    android:layout_width="72dp"
+                    android:layout_height="38dp"
+                    android:background="@drawable/bg_nav_active_pill"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@android:drawable/ic_menu_compass"
+                        app:tint="#FFFFFF" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/navConnectionsBtn"
+                    android:layout_width="72dp"
+                    android:layout_height="38dp"
+                    android:layout_marginStart="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@android:drawable/ic_menu_share"
+                        app:tint="#CCCCCC" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/navSettingsBtn"
+                    android:layout_width="72dp"
+                    android:layout_height="38dp"
+                    android:layout_marginStart="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@android:drawable/ic_menu_preferences"
+                        app:tint="#CCCCCC" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+    <!-- LEFT SIDEBAR DRAWER MENU -->
+    <LinearLayout
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="?attr/colorSurfaceVariant"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="TChat"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDrawerUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Logged in as: User"
+            android:textColor="#8A2BE2"
+            android:textSize="13sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="#333333" />
+
+        <TextView
+            android:id="@+id/drawerItemHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:text="💬 Spaces &amp; Home"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/drawerItemConnect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:text="📡 Local &amp; BT Connections"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/drawerItemSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            android:text="⚙️ App Settings"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnDrawerLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign Out" />
+
+    </LinearLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>
