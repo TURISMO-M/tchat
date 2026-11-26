@@ -1,0 +1,8 @@
+<resources>
+    <color name="tchat_surface">#12131F</color>
+    <color name="tchat_surface_variant">#1D1E30</color>
+    <color name="tchat_primary_container">#1E1C33</color>
+    <color name="tchat_on_primary_container">#FFFFFF</color>
+    <color name="tchat_purple">#8A2BE2</color>
+    <color name="tchat_blue">#4A90E2</color>
+</resources>

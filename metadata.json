@@ -1,0 +1,5 @@
+{
+  "name": "TChat",
+  "description": "TChat messaging application with Spaces, Direct Messages, and Local Network / Bluetooth / TCP connection management.",
+  "requestFramePermissions": []
+}
