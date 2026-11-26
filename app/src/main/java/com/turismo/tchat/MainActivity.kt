@@ -32,10 +32,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlin.math.max
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
@@ -69,6 +73,10 @@ class MainActivity : AppCompatActivity() {
 
     // Core UI
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var mainRootLayout: View
+    private lateinit var headerBar: View
+    private lateinit var drawerMenu: View
+    private lateinit var bottomFloatingDock: View
     private lateinit var btnOpenDrawer: ImageView
     private lateinit var btnModeMenu: ImageView
     private lateinit var cardInAppNotification: CardView
@@ -189,11 +197,18 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         applySavedTheme(prefs.getString(KEY_THEME, "dark") ?: "dark")
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_main)
+
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = false
+            isAppearanceLightNavigationBars = false
+        }
 
         username = prefs.getString(KEY_USERNAME, "User") ?: "User"
 
         bindViews()
+        setupSystemInsets()
         seedInitialThreads()
         setupListeners()
         setupBackNavigation()
@@ -205,6 +220,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindViews() {
         drawerLayout = findViewById(R.id.drawerLayout)
+        mainRootLayout = findViewById(R.id.mainRootLayout)
+        headerBar = findViewById(R.id.headerBar)
+        drawerMenu = findViewById(R.id.drawerMenu)
+        bottomFloatingDock = findViewById(R.id.bottomFloatingDock)
         btnOpenDrawer = findViewById(R.id.btnOpenDrawer)
         btnModeMenu = findViewById(R.id.btnModeMenu)
         cardInAppNotification = findViewById(R.id.cardInAppNotification)
@@ -277,23 +296,39 @@ class MainActivity : AppCompatActivity() {
         rvMessages.adapter = messageAdapter
     }
 
-    private fun seedInitialThreads() {
-        threads.add(
-            ChatThread(
-                id = "space_general",
-                title = "#general",
-                mode = "Space",
-                messages = mutableListOf(
-                    ChatMessage(
-                        id = "init_1",
-                        sender = "TChat",
-                        text = "Welcome to TChat! Create a Space or connect via Local Wi-Fi, Bluetooth, or TCP IP.",
-                        timestamp = currentTime(),
-                        isOwn = false
-                    )
-                )
+    private fun setupSystemInsets() {
+        val baseHeaderHeight = dp(56)
+        val dp12 = dp(12)
+        val dp16 = dp(16)
+
+        ViewCompat.setOnApplyWindowInsetsListener(drawerLayout) { _, windowInsets ->
+            val sysBars = windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
             )
-        )
+            val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+            val bottomInset = max(sysBars.bottom, ime.bottom)
+
+            // Keep headerBar below notification/status bar while matching its color underneath
+            headerBar.layoutParams = headerBar.layoutParams.apply {
+                height = baseHeaderHeight + sysBars.top
+            }
+            headerBar.setPadding(dp12, sysBars.top, dp12, 0)
+
+            // Keep bottom navigation dock & chat input above phone navigation bar / keyboard
+            mainRootLayout.setPadding(sysBars.left, 0, sysBars.right, bottomInset)
+            bottomFloatingDock.visibility =
+                if (ime.bottom > sysBars.bottom && currentTab == Tab.CHAT) View.GONE else View.VISIBLE
+
+            // Keep drawer contents inside safe system bar bounds
+            drawerMenu.setPadding(dp16 + sysBars.left, dp16 + sysBars.top, dp16, dp16 + sysBars.bottom)
+
+            windowInsets
+        }
+        ViewCompat.requestApplyInsets(drawerLayout)
+    }
+
+    private fun seedInitialThreads() {
+        threads.clear()
     }
 
     private fun setupListeners() {
@@ -512,6 +547,18 @@ class MainActivity : AppCompatActivity() {
         rvGlobalChats.removeAllViews()
         val dp8 = dp(8)
         val dp14 = dp(14)
+
+        if (threads.isEmpty()) {
+            val emptyTv = TextView(this).apply {
+                text = "No chats yet.\nTap + to create a Space or connect in Connections."
+                setTextColor(Color.parseColor("#888899"))
+                textSize = 14f
+                gravity = Gravity.CENTER
+                setPadding(dp(24), dp(48), dp(24), dp(24))
+            }
+            rvGlobalChats.addView(emptyTv)
+            return
+        }
 
         for (thread in threads) {
             val card = CardView(this).apply {

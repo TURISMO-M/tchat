@@ -80,7 +80,7 @@ export default function App() {
       const saved = localStorage.getItem(STORAGE_KEYS.threads);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch {
       // Fallback to defaults
@@ -88,7 +88,7 @@ export default function App() {
     return INITIAL_THREADS;
   });
   const [activeThreadId, setActiveThreadId] = useState<string>(
-    INITIAL_THREADS[0].id
+    INITIAL_THREADS[0]?.id ?? ''
   );
   const [replyingTo, setReplyingTo] = useState<ChatMessage | null>(null);
   const [messageInput, setMessageInput] = useState('');
@@ -615,7 +615,15 @@ export default function App() {
 
             <div className="flex-1 overflow-y-auto px-3 pb-24">
               <div className="mx-auto flex max-w-3xl flex-col gap-2.5">
-                {threads.map((thread) => {
+                {threads.length === 0 ? (
+                  <div
+                    className="py-12 text-center text-sm"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    No chats yet. Tap + to create a Space or connect in Connections.
+                  </div>
+                ) : (
+                  threads.map((thread) => {
                   const lastMsg = thread.messages[thread.messages.length - 1];
                   return (
                     <button
@@ -674,7 +682,8 @@ export default function App() {
                       </div>
                     </button>
                   );
-                })}
+                  })
+                )}
               </div>
             </div>
 
